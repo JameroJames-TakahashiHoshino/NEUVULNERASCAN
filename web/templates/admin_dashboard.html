@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="app-page app-page-admin-dashboard">
+    <section class="app-page-header">
+      <h2 class="page-title">Admin Dashboard</h2>
+      <p class="page-subtitle">Monitor users, their activity, and scanning permissions.</p>
+    </section>
+
+    <section class="cards admin-cards app-panel-row">
+      <div class="card app-card-metric">Total Users: {{ total_users }}</div>
+      <div class="card app-card-metric">Total Reports: {{ total_reports }}</div>
+    </section>
+
+    <section class="app-panel app-panel-table">
+      <div class="app-panel-header">
+        <h3 class="panel-title">Users Overview</h3>
+      </div>
+      <div class="app-table-wrapper">
+        <table class="app-table">
+          <thead>
+            <tr>
+              <th>Avatar</th>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Reports</th>
+              <th>Last Scan</th>
+              <th>Scan Permission</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in users_data %}
+              <tr>
+                <td>
+                  {% if item.avatar %}
+                    <img src="{{ url_for('static', filename=item.avatar) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                  {% else %}
+                    <span class="app-profile-initial">{{ item.user.username[0]|upper }}</span>
+                  {% endif %}
+                </td>
+                <td>{{ item.user.username }}</td>
+                <td>{% if item.user.is_admin %}Admin{% else %}User{% endif %}</td>
+                <td>{{ item.reports_count }}</td>
+                <td>
+                  {% if item.last_scan_time %}
+                    {{ item.last_scan_time }}
+                  {% else %}
+                    &mdash;
+                  {% endif %}
+                </td>
+                <td>
+                  {% if item.can_scan %}
+                    <span class="badge badge-ok">Allowed</span>
+                  {% else %}
+                    <span class="badge badge-warn">Blocked</span>
+                  {% endif %}
+                </td>
+                <td class="col-actions">
+                  <a href="{{ url_for('main.admin_user_detail', user_id=item.user.id) }}" class="app-link">View activity</a>
+                  {% if current_user.id != item.user.id %}
+                    <form method="POST" action="{{ url_for('main.admin_toggle_scan', user_id=item.user.id) }}" class="inline-form">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      {% if item.can_scan %}
+                        <button type="submit" class="btn-small btn-danger">Disable scans</button>
+                      {% else %}
+                        <button type="submit" class="btn-small btn-primary">Enable scans</button>
+                      {% endif %}
+                    </form>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+{% endblock %}

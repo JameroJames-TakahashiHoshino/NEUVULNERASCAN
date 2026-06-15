@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="app-page app-page-scan">
+    <section class="app-page-header">
+      <h2 class="page-title">Run Scan</h2>
+      <p class="page-subtitle">Enter a target host or domain to start a vulnerability scan.</p>
+    </section>
+
+    <section class="app-panel app-panel-form">
+      <form method="POST" class="app-form">
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+          <label for="{{ form.target.id }}" class="form-label">{{ form.target.label }}</label>
+          {{ form.target(size=60, class="form-input") }}
+        </div>
+        <div class="form-actions">
+          {{ form.submit(class="btn-primary") }}
+        </div>
+      </form>
+    </section>
+  </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+  <div class="login-page admin-login-page">
+    <div class="login-overlay">
+      <h2 class="login-title">Admin Sign In</h2>
+      <p class="login-subtitle">Restricted access. Answer all security questions to proceed.</p>
+
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="login-form-row">
+          <label for="username">{{ form.username.label }}</label>
+          {{ form.username(id="username") }}
+          {% for err in form.username.errors %}
+            <div class="form-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="login-form-row">
+          <label for="password">{{ form.password.label }}</label>
+          {{ form.password(id="password") }}
+          {% for err in form.password.errors %}
+            <div class="form-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="login-form-row">
+          <label for="favorite_color">{{ form.favorite_color.label }}</label>
+          {{ form.favorite_color(id="favorite_color") }}
+          {% for err in form.favorite_color.errors %}
+            <div class="form-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="login-form-row">
+          <label for="age">{{ form.age.label }}</label>
+          {{ form.age(id="age") }}
+          {% for err in form.age.errors %}
+            <div class="form-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="login-form-row">
+          <label for="email">{{ form.email.label }}</label>
+          {{ form.email(id="email") }}
+          {% for err in form.email.errors %}
+            <div class="form-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="login-actions">
+          {{ form.submit() }}
+          <a href="{{ url_for('auth.login') }}" class="btn-secondary admin-back-user">⬅ Back to user login</a>
+        </div>
+      </form>
+
+      <p class="login-meta">This area is for the system administrator only.</p>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>NeuVulneraScan</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="dark theme-darkblue {% block body_class %}{% endblock %}" data-theme="darkblue">
+  {% block header %}
+    {% if current_user.is_authenticated %}
+    <header class="app-header">
+      <div class="app-header-inner">
+        <div class="app-brand">
+          <div class="app-brand-logo-wrap">
+            <img src="{{ url_for('static', filename='Images/newera.png') }}" alt="New Era University" class="app-brand-logo">
+          </div>
+          <div class="app-brand-text-group">
+            <div class="app-brand-title">NEUVULNERASCAN</div>
+            <div class="app-brand-subtitle">Cybersecurity Scanner Dashboard</div>
+          </div>
+        </div>
+        <nav class="app-nav">
+          <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('main.scan') }}">Scan</a>
+          <a href="{{ url_for('main.reports') }}">Reports</a>
+          {% if current_user.is_admin %}
+            <a href="{{ url_for('main.admin_dashboard') }}">Admin</a>
+          {% endif %}
+
+          {% if current_user.is_authenticated %}
+          <div class="app-notify">
+            <button type="button" class="app-notify-toggle" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+              <span class="app-notify-icon">&#128276;</span>
+              {% if current_user_notifications and current_user_notifications|length > 0 %}
+                <span class="app-notify-badge">{{ current_user_notifications|length }}</span>
+              {% endif %}
+            </button>
+            <div class="app-notify-menu" aria-label="Notifications menu">
+              {% if current_user_notifications and current_user_notifications|length > 0 %}
+                <ul class="app-notify-list">
+                  {% for n in current_user_notifications %}
+                    <li class="app-notify-item">
+                      <div class="app-notify-message">{{ n.message }}</div>
+                      <div class="app-notify-time">{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <div class="app-notify-empty">No notifications yet.</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="app-profile">
+            <button type="button" class="app-profile-toggle" aria-haspopup="true" aria-expanded="false">
+              <span class="app-profile-avatar-small">
+                {% if current_user_avatar %}
+                  <img src="{{ url_for('static', filename=current_user_avatar) }}" alt="Profile picture">
+                {% else %}
+                  <span class="app-profile-initial">{{ current_user.username[0]|upper }}</span>
+                {% endif %}
+              </span>
+              <span class="app-profile-caret">▾</span>
+            </button>
+            <div class="app-profile-menu" aria-label="Profile menu">
+              <div class="app-profile-header">
+                <div class="app-profile-avatar-large">
+                  {% if current_user_avatar %}
+                    <img src="{{ url_for('static', filename=current_user_avatar) }}" alt="Profile picture">
+                  {% else %}
+                    <span class="app-profile-initial-large">{{ current_user.username[0]|upper }}</span>
+                  {% endif %}
+                </div>
+                <div class="app-profile-name-block">
+                  <div class="app-profile-name">{{ current_user.username }}</div>
+                  <div class="app-profile-sub">Signed in</div>
+                </div>
+              </div>
+
+              <div class="app-profile-section">
+                <a href="{{ url_for('auth.profile') }}" class="app-profile-link">
+                  <span class="app-profile-icon" aria-hidden="true">&#9881;</span>
+                  <span>Settings</span>
+                </a>
+              </div>
+
+              <div class="app-profile-section app-profile-theme">
+                <div class="app-profile-label">Theme</div>
+                <button type="button" class="app-profile-theme-btn" data-theme="darkblue">Dark blue</button>
+                <button type="button" class="app-profile-theme-btn" data-theme="rainbow">Rainbow</button>
+                <button type="button" class="app-profile-theme-btn" data-theme="light">Light</button>
+              </div>
+
+              <div class="app-profile-section">
+                <a href="{{ url_for('auth.logout') }}" class="app-profile-link app-profile-logout">Logout</a>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+    {% endif %}
+  {% endblock %}
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for cat, msg in messages %}
+            <li class="flash {{ cat }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  {% block extra_scripts %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

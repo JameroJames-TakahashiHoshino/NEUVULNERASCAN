@@ -1,0 +1,203 @@
+NeuVulneraScan – Setup & Run Guide
+
+Python Version: 3.10+
+
+1. Project Layout (important paths)
+
+- Root: D:\NeuVulneraScan
+- Web app (Flask): web/ (blueprints, models, templates, static)
+- Scanners: src/scanner/
+- CLI entrypoint: scan.py
+- Web entrypoint: app.py
+- Instance data (DB, etc.): instance/ (auto-created by Flask)
+
+2. Creating & Activating the Virtual Environment (Windows / PowerShell)
+
+From the project root (D:\NeuVulneraScan):
+
+- python -m venv venv
+- .\venv\Scripts\Activate.ps1
+
+You should then see (venv) in your prompt.
+
+3. Installing Dependencies
+
+- pip install -r requirements.txt
+
+Key packages actually used by the current codebase:
+
+- requests – HTTP requests for header/SQli/dir scans
+- beautifulsoup4 – HTML parsing for form/tech fingerprinting
+- python-nmap – interface to Nmap for port scanning
+- dnspython – DNS lookups (A, MX, TXT, etc.)
+- flask, flask_sqlalchemy, flask_login, flask_wtf, flask_bcrypt – web UI, DB, auth, forms, password hashing
+- flask_limiter – simple rate limiting for the web app
+- tqdm – progress bars for long-running scans
+
+External requirement: Nmap binary must be installed and available in PATH for python-nmap to work.
+
+4. Database & Instance Folder
+
+- The Flask app uses SQLite via SQLAlchemy.
+- The database file neu.db is stored in Flask's instance folder (app.instance_path).
+- On first run, web/create_app() ensures the instance directory exists and runs db.create_all() to create tables.
+- No manual DB setup is required; just run the app once.
+
+5. Running the Web Interface (recommended for normal use)
+
+From D:\NeuVulneraScan with the venv active:
+
+- python app.py
+
+This will start Flask in debug mode, normally at http://127.0.0.1:5000.
+
+First-time use:
+
+- Visit /auth/register to create an account.
+- Then log in at /auth/login.
+- Use the Scan page to start a new scan; results are stored as Report records and written as JSON/TXT files.
+
+6. Running the CLI Scanner
+
+From D:\NeuVulneraScan with the venv active:
+
+- python scan.py --target 127.0.0.1 --json --txt
+
+Where:
+
+- --target (required) – IP or URL to scan.
+- --json (optional) – save JSON report via ReportGenerator.
+- --txt (optional) – save human-readable TXT report.
+
+7. Common Warnings & How To Interpret Them
+
+- Flask-Limiter in-memory storage warning:
+	- Text: Using the in-memory storage for tracking rate limits...
+	- Meaning: rate-limit data is not persisted and not shared between workers.
+	- Impact: acceptable for local development; for production, configure a proper storage backend.
+
+- sqlite3.OperationalError: unable to open database file
+	- Usually caused by missing/wrong instance path.
+	- Already handled in web/__init__.py by creating app.instance_path and pointing SQLALCHEMY_DATABASE_URI to neu.db inside it.
+
+8. Installed Dependencies (explanation)
+
+requests
+
+Purpose: Fetch web pages, send HTTP requests.
+Reason: Used for vulnerability checks such as header verification, SQLi testing, and directory brute force.
+
+beautifulsoup4
+
+Purpose: Parse HTML content.
+Reason: Helps extract forms, hidden fields, and detect outdated web frameworks.
+
+python-nmap
+
+Purpose: Interface with Nmap for local network scanning.
+Reason: Performs port scanning (1–1024) and service identification.
+
+dnspython
+
+Purpose: DNS queries and record lookup.
+Reason: Used to detect DNS misconfigurations (A, MX, TXT records).
+
+flask & extensions
+
+Purpose: Backend framework for dashboard, DB and auth.
+Reason: Powers the NeuVulneraScan web UI, user accounts, and persistent storage.
+
+tqdm
+
+Purpose: Generate progress/loading bars.
+Reason: Adds professional scanning progress indicators during directory brute force and long scans.
+
+Security Notes
+
+Virtual environment isolates dependencies for reproducibility and security.
+
+No API keys required for Steps 1–3 of development.
+
+SQL injection tests are non-destructive, using boolean-based payloads only.
+
+Directory brute force uses safe, non-malicious wordlists.
+
+SSL scanning is passive — only reads certificate data, does not exploit.
+
+Memory & Performance Notes
+
+Avoid loading full HTML pages into memory; use streamed responses.
+
+Directory brute force uses chunked processing to avoid high RAM usage.
+
+DNS results are cached to reduce repeated resolutions.
+
+Logging will be converted into asynchronous mode in Step 4.
+
+Report generation writes line-by-line to avoid storing large data all at once.
+
+New Modules Added in Step 2
+
+These were introduced as part of the full scanning engine:
+
+port_scanner.py
+
+dns_scanner.py
+
+header_scanner.py
+
+sqli_scanner.py
+
+dir_scanner.py
+
+ssl_scanner.py
+
+Each module handles one security domain and returns structured results.
+
+Engine Architecture (engine.py)
+
+The engine acts as the orchestrator:
+
+Runs all modules in a controlled sequence
+
+Aggregates all results
+
+Returns a unified vulnerability report dictionary
+
+This design follows real-world security tools like Nessus, OpenVAS, and Nmap NSE architecture patterns.
+
+Report Generator (report.py)
+
+This module generates two types of reports:
+
+report_TARGET.json
+
+Raw, structured data
+
+Best for system analysis or dashboard ingestion
+
+report_TARGET.txt
+
+Human-readable report
+
+Includes timestamps, sections, and formatted findings
+
+Features
+
+Structured vulnerability summary
+
+Clean, readable formatting
+
+Timestamping for tracking scan history
+
+Auto-safe filenames (no illegal characters)
+
+Logging System (utils/logger.py)
+
+Timestamped logging for all modules
+
+INFO / WARNING / ERROR levels
+
+Minimal overhead, lightweight logging
+
+Will be upgraded to rotating logs in Step 4

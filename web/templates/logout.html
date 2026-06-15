@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+  <div class="intro-screen logout-screen">
+    <div class="intro-panel">
+      <h2 class="intro-title">Logging Out</h2>
+      <p class="intro-line intro-line-main">Closing your NeuVulneraScan session securely&hellip;</p>
+
+      <div class="intro-loader">
+        <div class="intro-orb"></div>
+        <div class="intro-orb-shadow"></div>
+      </div>
+
+      <p class="intro-hint">Logging out now and redirecting you to the login page&hellip;</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const targetUrl = "{{ url_for('auth.login') }}";
+
+      // Short logout animation before sending the user back to login
+      setTimeout(function () {
+        window.location.href = targetUrl;
+      }, 4000);
+    });
+  </script>
+{% endblock %}

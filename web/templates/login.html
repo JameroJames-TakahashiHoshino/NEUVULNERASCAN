@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{# Auth page: hide the global dashboard/scan/reports header #}
+{% block header %}{% endblock %}
+
+{% block content %}
+  <div class="login-page">
+    <a href="{{ url_for('main.index') }}" class="login-back-landing">⬅ Back to landing page</a>
+    <div class="login-overlay">
+      <h2 class="login-title">Welcome back</h2>
+      <p class="login-subtitle">Sign in to access your NeuVulneraScan dashboard.</p>
+
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="login-form-row">
+          <label for="username">{{ form.username.label }}</label>
+          {{ form.username(id="username") }}
+        </div>
+
+        <div class="login-form-row">
+          <label for="password">{{ form.password.label }}</label>
+          {{ form.password(id="password") }}
+        </div>
+
+        <div class="login-form-row login-remember-row">
+          <a class="forgot-link" href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
+          <label class="remember-label">
+            {{ form.remember() }} {{ form.remember.label.text }}
+          </label>
+        </div>
+
+        <div class="login-form-row login-terms-row">
+          <label class="terms-checkbox">
+            <input type="checkbox" id="terms-checkbox">
+            I agree to the
+            <button type="button" class="terms-link" id="terms-link">Terms &amp; Agreement</button>
+          </label>
+        </div>
+
+        <div class="login-actions">
+          {{ form.submit() }}
+        </div>
+      </form>
+
+      <p class="login-meta">Need an account? <a href="{{ url_for('auth.register') }}">Sign up</a></p>
+      <p class="login-meta">Are you an admin? <a href="{{ url_for('auth.admin_login') }}">Admin login</a></p>
+    </div>
+
+    <div id="terms-modal" class="terms-modal-backdrop" aria-hidden="true">
+      <div class="terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-title">
+        <h3 id="terms-title">Terms &amp; Agreement</h3>
+        <div class="terms-modal-body">
+          <p>
+            By using NeuVulneraScan, you agree to use this tool only on
+            systems you own or have documented, explicit permission to test.
+          </p>
+          <p>
+            You are fully responsible for complying with all applicable laws,
+            regulations, and university policies. Unauthorized scanning of
+            third-party systems may be illegal and subject to disciplinary
+            action.
+          </p>
+          <p>
+            Scans may generate network traffic, logs, or alerts on the target
+            environment. The author and the university are not responsible for
+            any misuse of this application, any damage, or any policy
+            violations arising from how you choose to run scans.
+          </p>
+          <p>
+            If you do not agree with these terms, you should not log in or use
+            NeuVulneraScan.
+          </p>
+        </div>
+        <div class="terms-modal-actions">
+          <button type="button" class="terms-btn secondary" id="terms-disagree">Disagree</button>
+          <button type="button" class="terms-btn primary" id="terms-agree">I Agree</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var termsLink = document.getElementById('terms-link');
+      var termsModal = document.getElementById('terms-modal');
+      var agreeBtn = document.getElementById('terms-agree');
+      var disagreeBtn = document.getElementById('terms-disagree');
+      var termsCheckbox = document.getElementById('terms-checkbox');
+      var form = document.querySelector('.login-page form');
+
+      function openModal() {
+        if (termsModal) {
+          termsModal.classList.add('open');
+          termsModal.setAttribute('aria-hidden', 'false');
+        }
+      }
+
+      function closeModal() {
+        if (termsModal) {
+          termsModal.classList.remove('open');
+          termsModal.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      if (termsLink && termsModal) {
+        termsLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal();
+        });
+      }
+
+      if (agreeBtn) {
+        agreeBtn.addEventListener('click', function () {
+          if (termsCheckbox) {
+            termsCheckbox.checked = true;
+          }
+          closeModal();
+        });
+      }
+
+      if (disagreeBtn) {
+        disagreeBtn.addEventListener('click', function () {
+          if (termsCheckbox) {
+            termsCheckbox.checked = false;
+          }
+          closeModal();
+        });
+      }
+
+      if (termsModal) {
+        termsModal.addEventListener('click', function (e) {
+          if (e.target === termsModal) {
+            closeModal();
+          }
+        });
+      }
+
+      if (form && termsCheckbox) {
+        form.addEventListener('submit', function (e) {
+          if (!termsCheckbox.checked) {
+            e.preventDefault();
+            alert('You must agree to the Terms & Agreement before logging in.');
+          }
+        });
+      }
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+  <div class="intro-screen pre-dashboard-screen">
+    <div class="intro-panel pre-dashboard-panel">
+      <h2 class="intro-title">Preparing Your Dashboard</h2>
+      <p class="intro-line intro-line-main">Securing session and loading recent scan activity&hellip;</p>
+
+      <div class="intro-loader">
+        <div class="intro-orb pre-dashboard-orb"></div>
+        <div class="intro-orb-shadow"></div>
+      </div>
+
+      <p class="intro-hint">Please wait while we prepare your dashboard view.</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const targetUrl = "{{ url_for('main.dashboard') }}";
+
+      // Shorter hand-off animation before entering the dashboard
+      setTimeout(function () {
+        window.location.href = targetUrl;
+      }, 4000);
+    });
+  </script>
+{% endblock %}

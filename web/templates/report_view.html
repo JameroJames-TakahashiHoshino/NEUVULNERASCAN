@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="app-page app-page-report-view">
+    <section class="app-page-header">
+      <h2 class="page-title">Report: {{ report.target }}</h2>
+      <p class="page-subtitle">Created {{ report.created_at }}</p>
+    </section>
+
+    <section class="app-panel app-panel-code">
+      <div class="app-panel-header">
+        <h3 class="panel-title">Raw Report Data</h3>
+      </div>
+      <div class="code-block">
+        <pre>{{ data | tojson(indent=2) }}</pre>
+      </div>
+    </section>
+
+    <section class="app-panel app-panel-actions">
+      <div class="app-panel-header">
+        <h3 class="panel-title">Download &amp; Manage</h3>
+      </div>
+      <div class="app-download-links">
+        <a href="{{ url_for('main.report_export', report_id=report.id, fmt='txt') }}" class="btn-primary">Download TXT</a>
+        <a href="{{ url_for('main.report_export', report_id=report.id, fmt='json') }}" class="btn-primary btn-secondary">Download JSON</a>
+        <a href="{{ url_for('main.report_export', report_id=report.id, fmt='csv') }}" class="btn-primary btn-secondary">Download CSV</a>
+        <a href="{{ url_for('main.report_export', report_id=report.id, fmt='pdf') }}" class="btn-primary btn-secondary">Download PDF</a>
+        <a href="{{ url_for('main.report_export', report_id=report.id, fmt='evtx') }}" class="btn-primary btn-secondary">Download EVTX</a>
+        <form method="POST" action="{{ url_for('main.report_delete', report_id=report.id) }}" class="inline-form" style="margin-left: 8px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-primary btn-danger">Delete report</button>
+        </form>
+      </div>
+    </section>
+  </div>
+{% endblock %}

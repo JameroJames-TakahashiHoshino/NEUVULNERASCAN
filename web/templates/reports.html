@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="app-page app-page-reports">
+    <section class="app-page-header">
+      <h2 class="page-title">Reports</h2>
+      <p class="page-subtitle">Browse, view, and manage your stored scan reports.</p>
+    </section>
+
+    <section class="app-panel app-panel-table">
+      <div class="app-panel-header">
+        <h3 class="panel-title">All Reports</h3>
+      </div>
+      <div class="app-table-wrapper">
+        <table class="app-table">
+          <thead>
+            <tr><th>Target</th><th>Created</th><th class="col-actions">Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for rep in pagination.items %}
+              <tr>
+                <td>{{ rep.target }}</td>
+                <td>{{ rep.created_at }}</td>
+                <td class="col-actions">
+                  <a href="{{ url_for('main.report_view', report_id=rep.id) }}" class="app-link">View</a>
+                  <form method="POST" action="{{ url_for('main.report_delete', report_id=rep.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-small btn-danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination app-pagination">
+        {% if pagination.has_prev %}
+          <a href="{{ url_for('main.reports', page=pagination.prev_num) }}" class="app-link">Prev</a>
+        {% endif %}
+        <span>Page {{ pagination.page }} / {{ pagination.pages }}</span>
+        {% if pagination.has_next %}
+          <a href="{{ url_for('main.reports', page=pagination.next_num) }}" class="app-link">Next</a>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

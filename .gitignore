@@ -1,0 +1,11 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+Nmap/
+reports/
+instance/*.db
+instance/*.sqlite3
+instance/*.sqlite
+instance/*.json

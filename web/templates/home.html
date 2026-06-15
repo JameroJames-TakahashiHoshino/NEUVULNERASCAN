@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block body_class %}home-body{% endblock %}
+
+{# Hide the global dashboard/scan/reports header on the home (landing) page #}
+{% block header %}{% endblock %}
+
+{% block extra_head %}
+  <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
+    rel="stylesheet"
+  />
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="https://unpkg.com/scrollreveal"></script>
+{% endblock %}
+
+{% block content %}
+
+  <header>
+    <div class="header__image">
+      <img src="{{ url_for('static', filename='Images/NEULVULNERASCAN.jpg') }}" alt="NeuVulneraScan" />
+    </div>
+    <div class="header__content">
+      <h2>WELCOME TO JAMES JAMERO'S NEUVULNERASCAN</h2>
+      <h1>Security Scanning For Your Campus</h1>
+      <p>
+        NeuVulneraScan helps students, faculty, and IT teams quickly check for
+        common vulnerabilities in web applications and network services using a
+        simple, guided interface.
+      </p>
+      <div class="header__btn">
+        <a href="{{ url_for('main.intro') }}">
+          <button type="button">Start Scanning</button>
+        </a>
+      </div>
+      <ul class="header__socials">
+        <li>
+          <a href="#" class="home-mode-trigger" data-mode="shield"><i class="ri-shield-keyhole-line"></i></a>
+        </li>
+        <li>
+          <a href="#" class="home-mode-trigger" data-mode="bug"><i class="ri-bug-line"></i></a>
+        </li>
+        <li>
+          <a href="#" class="home-mode-trigger" data-mode="terminal"><i class="ri-terminal-line"></i></a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="home-section" id="about">
+    <h2>About NeuVulneraScan</h2>
+    <p>
+      NeuVulneraScan is a lightweight vulnerability scanner designed primarily
+      for educational environments. It supports classroom demos, security labs,
+      and campus IT teams that want a simple way to visualize common security
+      gaps.
+    </p>
+  </section>
+
+  <section class="home-section home-features" id="features">
+    <h2>Key Features</h2>
+    <div class="feature-grid">
+      <article class="feature-card">
+        <h3>Port &amp; Service Scanning</h3>
+        <p>Identify open ports and common services quickly with Nmap-based scans.</p>
+      </article>
+      <article class="feature-card">
+        <h3>DNS &amp; SSL Checks</h3>
+        <p>Inspect DNS records and SSL certificates for misconfigurations.</p>
+      </article>
+      <article class="feature-card">
+        <h3>HTTP Headers &amp; SQLi Tests</h3>
+        <p>Review security headers and safely probe for basic SQL injection issues.</p>
+      </article>
+      <article class="feature-card">
+        <h3>Report History</h3>
+        <p>Store scan results and revisit them anytime via the dashboard.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section" id="timeline">
+    <h2>Project Timeline</h2>
+    <ul class="timeline-list">
+      <li><strong>2025</strong> &mdash; Initial development and university prototype.</li>
+      <li><strong>Ongoing</strong> &mdash; UI improvements, reporting, and educational enhancements.</li>
+    </ul>
+  </section>
+
+  <section class="home-section home-contact" id="contact">
+    <h2>Contact the Developer</h2>
+    <p>
+      For feedback, collaboration, or academic use, you can reach out directly:
+    </p>
+    <ul class="contact-list">
+      <li><strong>Name:</strong> James N Jamero</li>
+      <li><strong>Email:</strong> <a href="mailto:you@example.com">jamerojames425@gmail.com</a></li>
+      <li><strong>Github:</strong> <a href="mailto:you@example.com">https://github.com/JameroJames-TakahashiHoshino</a></li>
+      <li><strong>Location:</strong> Philippines</li>
+    </ul>
+  </section>
+
+  <footer class="home-footer">
+    <p>&copy; 2025 NeuVulneraScan. Created by James N Jamero.</p>
+    <p>Since 2025 &mdash; Philippines</p>
+  </footer>
+{% endblock %}

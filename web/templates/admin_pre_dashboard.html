@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+  <div class="intro-screen pre-dashboard-screen">
+    <div class="intro-panel pre-dashboard-panel">
+      <h2 class="intro-title">Welcome {{ current_user.username }} the Admin</h2>
+      <p class="intro-line intro-line-main">Now preparing your admin dashboard&hellip;</p>
+
+      <div class="intro-loader">
+        <div class="intro-orb pre-dashboard-orb"></div>
+        <div class="intro-orb-shadow"></div>
+      </div>
+
+      <p class="intro-hint">Monitoring user activity and loading system overview.</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const targetUrl = "{{ url_for('main.admin_dashboard') }}";
+
+      setTimeout(function () {
+        window.location.href = targetUrl;
+      }, 4000);
+    });
+  </script>
+{% endblock %}

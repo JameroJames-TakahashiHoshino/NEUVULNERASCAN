@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="app-page app-page-admin-user-detail">
+    <section class="app-page-header">
+      <h2 class="page-title">User Detail: {{ user.username }}</h2>
+      <p class="page-subtitle">Review this user's profile, activity, and permissions.</p>
+    </section>
+
+    <section class="app-panel app-panel-profile">
+      <div class="profile-layout">
+        <div class="profile-avatar-block">
+          <div class="profile-avatar-large">
+            {% if avatar %}
+              <img src="{{ url_for('static', filename=avatar) }}" alt="Profile picture">
+            {% else %}
+              <span class="profile-avatar-placeholder">{{ user.username[0]|upper }}</span>
+            {% endif %}
+          </div>
+          <div class="profile-avatar-caption">
+            {% if user.is_admin %}
+              Admin account
+            {% else %}
+              Standard user
+            {% endif %}
+          </div>
+          <div class="profile-avatar-caption">
+            Scan permission:
+            {% if can_scan %}
+              <span class="badge badge-ok">Allowed</span>
+            {% else %}
+              <span class="badge badge-warn">Blocked</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="profile-form-block">
+          <h3 class="profile-section-title">Summary</h3>
+          <p>Total reports: {{ reports|length }}</p>
+          {% if reports|length > 0 %}
+            <p>Most recent scan: {{ reports[0].created_at }}</p>
+          {% endif %}
+          <p><a href="{{ url_for('main.admin_dashboard') }}" class="app-link">Back to admin dashboard</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-panel app-panel-list">
+      <div class="app-panel-header">
+        <h3 class="panel-title">Recent Reports</h3>
+      </div>
+      <ul class="app-list app-list-reports">
+        {% for r in reports %}
+          <li>
+            <div class="app-list-item-main">
+              <a href="{{ url_for('main.report_view', report_id=r.id) }}" class="app-link-strong">{{ r.target }}</a>
+            </div>
+            <div class="app-list-item-meta">{{ r.created_at }}</div>
+          </li>
+        {% else %}
+          <li class="app-list-empty">No reports for this user.</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="app-panel app-panel-list">
+      <div class="app-panel-header">
+        <h3 class="panel-title">Recent Notifications</h3>
+      </div>
+      <ul class="app-list app-list-notifications">
+        {% for n in notifications %}
+          <li>
+            <div class="app-list-item-main">{{ n.message }}</div>
+            <div class="app-list-item-meta">{{ n.created_at }}</div>
+          </li>
+        {% else %}
+          <li class="app-list-empty">No notifications for this user.</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+{% endblock %}
