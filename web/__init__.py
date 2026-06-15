@@ -16,12 +16,16 @@ csrf = CSRFProtect()
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
 
+    database_url = os.environ.get("DATABASE_URL")
+    if database_url and database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+
     # ensure instance folder exists before configuring DB path
     os.makedirs(app.instance_path, exist_ok=True)
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("NEU_SECRET", "change-me"),
-        SQLALCHEMY_DATABASE_URI="sqlite:///" + os.path.join(app.instance_path, "neu.db"),
+        SQLALCHEMY_DATABASE_URI=database_url or "sqlite:///" + os.path.join(app.instance_path, "neu.db"),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         REMEMBER_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",

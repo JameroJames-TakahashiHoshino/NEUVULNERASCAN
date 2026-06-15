@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: neuvulnerascan
+    env: docker
+    plan: starter
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: NEU_SECRET
+        generateValue: true
+      - key: NEU_ADMIN_PASSWORD
+        sync: false
+      - key: FLASK_DEBUG
+        value: "0"

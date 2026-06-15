@@ -82,7 +82,7 @@ Yes, you can run this online, but there is one important limitation: this projec
 Recommended options:
 
 - A VPS or cloud server where you can install Nmap
-- Render, Fly.io, Railway, or a similar host that supports custom start commands
+- Render or another Docker host that supports system packages
 
 For production hosting:
 
@@ -90,8 +90,26 @@ For production hosting:
 - Install Nmap on the server
 - Use a production WSGI server such as Gunicorn
 - Bind to `0.0.0.0` instead of `127.0.0.1`
+- Set `DATABASE_URL` if you want a hosted PostgreSQL database
 
-Example start command for Linux hosting:
+Docker deployment:
+
+```bash
+docker build -t neuvulnerascan .
+docker run -p 8000:8000 -e NEU_SECRET=your-secret -e NEU_ADMIN_PASSWORD=your-admin-password neuvulnerascan
+```
+
+Render deployment:
+
+1. Push this repo to GitHub.
+2. Create a new Render Web Service.
+3. Choose this repository and let Render use the `Dockerfile`.
+4. Add `NEU_ADMIN_PASSWORD` in the Render environment variables.
+5. Deploy.
+
+If you use Render's PostgreSQL, connect it by setting `DATABASE_URL` from the database service.
+
+Example start command for non-Docker Linux hosting:
 
 ```bash
 gunicorn wsgi:app
