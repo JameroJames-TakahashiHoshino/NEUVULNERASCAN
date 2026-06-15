@@ -1,67 +1,82 @@
 # NeuVulneraScan
 
-NeuVulneraScan is a Flask-based vulnerability scanning app with a web dashboard, user accounts, report history, and a CLI scanner.
+NeuVulneraScan is a Flask-based vulnerability scanning application that I created as a personal cybersecurity-related project during my 3rd year. I made this project to enhance my knowledge and hands-on skills in vulnerability scanning, especially in using Nmap and understanding how different scanning modules work.
 
-## What it does
+This project includes a web dashboard, user accounts, scan report history, and a CLI-based scanner.
 
-- Web UI for logging in, starting scans, and reviewing reports
-- CLI scanning through `scan.py`
-- JSON and TXT report generation
-- DNS, SSL, header, directory, SQLi, and port scanning modules
+## What It Does
+
+* Provides a web UI for logging in, starting scans, and reviewing reports
+* Supports CLI scanning through `scan.py`
+* Generates scan reports in JSON and TXT format
+* Includes scanning modules for:
+
+  * DNS checking
+  * SSL checking
+  * HTTP security headers
+  * Directory scanning
+  * SQL injection testing
+  * Port scanning using Nmap
 
 ## Project Structure
 
-- `app.py` - Flask development entrypoint
-- `web/` - Flask app, routes, templates, forms, and models
-- `src/scanner/` - scanning engine and scanner modules
-- `reports/` - generated scan reports
-- `instance/` - local database and runtime files
+```text
+app.py          - Flask development entry point
+web/            - Flask app, routes, templates, forms, and models
+src/scanner/    - Scanning engine and scanner modules
+reports/        - Generated scan reports
+instance/       - Local database and runtime files
+```
 
 ## Local Setup
 
-1. Create and activate a virtual environment:
+Create and activate a virtual environment:
 
-```powershell
+```bash
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-2. Install dependencies:
+Install dependencies:
 
-```powershell
+```bash
 pip install -r requirements.txt
 ```
 
-3. Install Nmap on your machine and make sure `nmap` is available in your PATH.
+Install Nmap on your machine and make sure `nmap` is available in your system PATH.
 
-4. Start the web app:
+Start the web app:
 
-```powershell
+```bash
 python app.py
 ```
 
-5. Open the app in your browser at `http://127.0.0.1:5000`.
+Open the app in your browser:
+
+```text
+http://127.0.0.1:5000
+```
 
 ## How to Use
 
 1. Register a user at `/auth/register`.
 2. Log in at `/auth/login`.
 3. Go to the dashboard and start a scan.
-4. Review the generated JSON and TXT reports in the dashboard and in `reports/`.
+4. Review the generated JSON and TXT reports in the dashboard or inside the `reports/` folder.
 
 ## CLI Usage
 
-Run a scan from the terminal:
+You can also run a scan from the terminal:
 
-```powershell
+```bash
 python scan.py --target example.com --json --txt
 ```
 
-## Upload to GitHub
+## Uploading to GitHub
 
-If this is not already a Git repo, initialize it first:
+If this is not already a Git repository, initialize it first:
 
-```powershell
+```bash
 git init
 git add .
 git commit -m "Initial commit"
@@ -69,27 +84,27 @@ git commit -m "Initial commit"
 
 Then create a new repository on GitHub and push your code:
 
-```powershell
+```bash
 git branch -M main
 git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
 git push -u origin main
 ```
 
-## Run Online
+## Running Online
 
-Yes, you can run this online, but there is one important limitation: this project uses Nmap and other active scanners, so the hosting provider must allow outbound network access and system packages.
+This project can be hosted online, but there is an important limitation. Since it uses Nmap and other active scanning techniques, the hosting provider must allow outbound network access and installation of system packages.
 
-Recommended options:
+Recommended hosting options:
 
-- A VPS or cloud server where you can install Nmap
-- Render, Fly.io, Railway, or a similar host that supports custom start commands
+* A VPS or cloud server where Nmap can be installed
+* Render, Fly.io, Railway, or other similar platforms that support custom start commands and system packages
 
 For production hosting:
 
-- Set environment variables like `NEU_SECRET`, `NEU_ADMIN_PASSWORD`, and `FLASK_DEBUG=0`
-- Install Nmap on the server
-- Use a production WSGI server such as Gunicorn
-- Bind to `0.0.0.0` instead of `127.0.0.1`
+* Set environment variables such as `NEU_SECRET`, `NEU_ADMIN_PASSWORD`, and `FLASK_DEBUG=0`
+* Install Nmap on the server
+* Use a production WSGI server such as Gunicorn
+* Bind the app to `0.0.0.0` instead of `127.0.0.1`
 
 Example start command for Linux hosting:
 
@@ -97,8 +112,12 @@ Example start command for Linux hosting:
 gunicorn wsgi:app
 ```
 
+## Important Note
+
+This project is for educational and personal learning purposes only. Only scan systems, websites, or networks that you own or have permission to test. Unauthorized scanning may be illegal or against the rules of the target system.
+
 ## Notes
 
-- Do not commit your virtual environment.
-- Avoid committing the local SQLite database in `instance/`.
-- Generated reports can be committed if you want samples, but most projects keep them out of Git.
+* Do not commit your virtual environment folder.
+* Avoid committing the local SQLite database inside `instance/`.
+* Generated reports can be committed if you want to provide samples, but most projects keep them out of Git.
